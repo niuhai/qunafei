@@ -1,0 +1,39 @@
+{
+  "defaultRadius": 200,
+  "cacheExpireMinutes": 60,
+  "recentSearches": [
+    {
+      "from": "??",
+      "to": "??",
+      "date": "2026-02-20",
+      "timestamp": "2026-02-16T03:20:59.700Z"
+    },
+    {
+      "from": "烟台,青岛",
+      "to": "上海",
+      "date": "2026-02-20",
+      "timestamp": "2026-02-16T03:18:02.322Z"
+    },
+    {
+      "from": "烟台",
+      "to": "上海",
+      "date": "2026-02-20",
+      "timestamp": "2026-02-16T03:18:00.470Z"
+    }
+  ],
+  "transportCost": {
+    "car": {
+      "costPerKm": 0.5,
+      "speedKmPerHour": 60
+    },
+    "train": {
+      "costPerKm": 0.4,
+      "speedKmPerHour": 200
+    },
+    "bus": {
+      "costPerKm": 0.3,
+      "speedKmPerHour": 80
+    }
+  },
+  "timeValuePerMinute": 0.5
+}

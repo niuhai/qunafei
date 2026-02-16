@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>航班价格周边机场筛选</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>🛫 航班价格周边机场筛选</h1>
+      <p class="subtitle">比较周边机场航班价格，找到最优出行方案</p>
+    </header>
+
+    <section class="search-panel">
+      <div class="search-row">
+        <div class="form-group">
+          <label for="originCity">出发城市</label>
+          <div class="input-wrapper">
+            <input type="text" id="originCity" placeholder="输入城市名称（如：烟台）" autocomplete="off">
+            <div class="city-dropdown" id="cityDropdown"></div>
+          </div>
+          <div class="selected-cities" id="selectedCities"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="destination">目的地</label>
+          <div class="input-wrapper">
+            <input type="text" id="destination" placeholder="输入城市或机场名称" autocomplete="off">
+            <div class="city-dropdown" id="destDropdown"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="departDate">出发日期</label>
+          <input type="date" id="departDate">
+        </div>
+
+        <button class="btn-search" id="btnSearch">
+          <span class="btn-text">查询</span>
+          <span class="btn-loading" style="display:none;">查询中...</span>
+        </button>
+      </div>
+
+      <div class="search-options">
+        <div class="form-group">
+          <label for="radius">搜索半径</label>
+          <select id="radius">
+            <option value="100">100km</option>
+            <option value="200" selected>200km</option>
+            <option value="300">300km</option>
+            <option value="500">500km</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="sortBy">排序方式</label>
+          <select id="sortBy">
+            <option value="totalCost">综合成本最低</option>
+            <option value="ticketPrice">机票价格最低</option>
+            <option value="totalTime">总时间最短</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="airports-panel" id="airportsPanel" style="display:none;">
+      <h3>📍 周边机场</h3>
+      <div class="airports-list" id="airportsList"></div>
+    </section>
+
+    <section class="results-panel" id="resultsPanel" style="display:none;">
+      <h3>🏆 推荐方案</h3>
+      <div class="results-list" id="resultsList"></div>
+    </section>
+
+    <section class="error-panel" id="errorPanel" style="display:none;">
+      <div class="error-message" id="errorMessage"></div>
+    </section>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

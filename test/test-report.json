@@ -1,0 +1,276 @@
+{
+  "summary": {
+    "total": 33,
+    "passed": 31,
+    "failed": 2,
+    "skipped": 0,
+    "passRate": "93.9%",
+    "timestamp": "2026-02-16T03:18:06.640Z"
+  },
+  "cases": [
+    {
+      "id": "TC-A000",
+      "name": "健康检查接口",
+      "passed": true,
+      "message": "ok",
+      "duration": 21,
+      "timestamp": "2026-02-16T03:16:57.200Z"
+    },
+    {
+      "id": "TC-A001",
+      "name": "配置接口返回默认值",
+      "passed": true,
+      "message": "",
+      "duration": 2,
+      "timestamp": "2026-02-16T03:16:57.203Z"
+    },
+    {
+      "id": "TC-A010",
+      "name": "获取周边机场-正常",
+      "passed": true,
+      "message": "",
+      "duration": 664,
+      "timestamp": "2026-02-16T03:16:57.868Z"
+    },
+    {
+      "id": "TC-A011",
+      "name": "获取周边机场-默认半径",
+      "passed": true,
+      "message": "",
+      "duration": 484,
+      "timestamp": "2026-02-16T03:16:58.462Z"
+    },
+    {
+      "id": "TC-A012",
+      "name": "获取周边机场-空城市",
+      "passed": true,
+      "message": "",
+      "duration": 2,
+      "timestamp": "2026-02-16T03:16:58.569Z"
+    },
+    {
+      "id": "TC-A013",
+      "name": "获取周边机场-无效城市",
+      "passed": false,
+      "message": "",
+      "duration": 546,
+      "timestamp": "2026-02-16T03:16:59.220Z"
+    },
+    {
+      "id": "TC-A014",
+      "name": "获取周边机场-超大半径",
+      "passed": false,
+      "message": "Request timeout",
+      "duration": 0,
+      "timestamp": "2026-02-16T03:17:29.334Z"
+    },
+    {
+      "id": "TC-A015",
+      "name": "获取周边机场-多城市",
+      "passed": true,
+      "message": "",
+      "duration": 683,
+      "timestamp": "2026-02-16T03:17:30.122Z"
+    },
+    {
+      "id": "TC-A020",
+      "name": "机场搜索-按代码",
+      "passed": true,
+      "message": "返回1条",
+      "duration": 3,
+      "timestamp": "2026-02-16T03:17:30.242Z"
+    },
+    {
+      "id": "TC-A021",
+      "name": "机场搜索-按城市",
+      "passed": true,
+      "message": "返回1条",
+      "duration": 2,
+      "timestamp": "2026-02-16T03:17:30.349Z"
+    },
+    {
+      "id": "TC-A022",
+      "name": "机场搜索-空关键词",
+      "passed": true,
+      "message": "返回105条",
+      "duration": 3,
+      "timestamp": "2026-02-16T03:17:30.455Z"
+    },
+    {
+      "id": "TC-A030",
+      "name": "获取机场信息-正常",
+      "passed": true,
+      "message": "",
+      "duration": 2,
+      "timestamp": "2026-02-16T03:17:30.562Z"
+    },
+    {
+      "id": "TC-A031",
+      "name": "获取机场信息-无效代码",
+      "passed": true,
+      "message": "",
+      "duration": 2,
+      "timestamp": "2026-02-16T03:17:30.670Z"
+    },
+    {
+      "id": "TC-A040",
+      "name": "获取所有城市",
+      "passed": true,
+      "message": "返回47个城市",
+      "duration": 1,
+      "timestamp": "2026-02-16T03:17:30.673Z"
+    },
+    {
+      "id": "TC-A041",
+      "name": "搜索城市",
+      "passed": true,
+      "message": "返回1个城市",
+      "duration": 2,
+      "timestamp": "2026-02-16T03:17:30.777Z"
+    },
+    {
+      "id": "TC-A050",
+      "name": "航班查询-正常",
+      "passed": true,
+      "message": "返回6条航班",
+      "duration": 5080,
+      "timestamp": "2026-02-16T03:17:35.857Z"
+    },
+    {
+      "id": "TC-A051",
+      "name": "航班查询-多机场",
+      "passed": true,
+      "message": "返回12条航班",
+      "duration": 2874,
+      "timestamp": "2026-02-16T03:17:39.233Z"
+    },
+    {
+      "id": "TC-A052",
+      "name": "航班查询-缺少参数",
+      "passed": true,
+      "message": "返回0条航班",
+      "duration": 2,
+      "timestamp": "2026-02-16T03:17:39.749Z"
+    },
+    {
+      "id": "TC-A053",
+      "name": "航班查询-日期格式错误",
+      "passed": true,
+      "message": "返回4条航班",
+      "duration": 2517,
+      "timestamp": "2026-02-16T03:17:42.775Z"
+    },
+    {
+      "id": "TC-A054",
+      "name": "航班查询-带筛选条件",
+      "passed": true,
+      "message": "返回3条航班",
+      "duration": 3,
+      "timestamp": "2026-02-16T03:17:43.287Z"
+    },
+    {
+      "id": "TC-A060",
+      "name": "综合推荐-正常",
+      "passed": true,
+      "message": "返回4条推荐",
+      "duration": 15654,
+      "timestamp": "2026-02-16T03:17:59.446Z"
+    },
+    {
+      "id": "TC-A061",
+      "name": "综合推荐-带偏好",
+      "passed": true,
+      "message": "返回3条推荐",
+      "duration": 514,
+      "timestamp": "2026-02-16T03:18:00.471Z"
+    },
+    {
+      "id": "TC-A062",
+      "name": "综合推荐-缺少必填项",
+      "passed": true,
+      "message": "返回0条推荐",
+      "duration": 1,
+      "timestamp": "2026-02-16T03:18:00.974Z"
+    },
+    {
+      "id": "TC-A063",
+      "name": "综合推荐-多出发城市",
+      "passed": true,
+      "message": "返回4条推荐",
+      "duration": 844,
+      "timestamp": "2026-02-16T03:18:02.323Z"
+    },
+    {
+      "id": "TC-A070",
+      "name": "成本计算-正常",
+      "passed": true,
+      "message": "总计: 630",
+      "duration": 1,
+      "timestamp": "2026-02-16T03:18:02.835Z"
+    },
+    {
+      "id": "TC-A071",
+      "name": "成本计算-缺少参数",
+      "passed": true,
+      "message": "",
+      "duration": 2,
+      "timestamp": "2026-02-16T03:18:02.941Z"
+    },
+    {
+      "id": "TC-A080",
+      "name": "获取历史记录",
+      "passed": true,
+      "message": "返回2条记录",
+      "duration": 1,
+      "timestamp": "2026-02-16T03:18:02.943Z"
+    },
+    {
+      "id": "TC-U001",
+      "name": "首页加载",
+      "passed": true,
+      "message": "2ms",
+      "duration": 2,
+      "timestamp": "2026-02-16T03:18:02.945Z"
+    },
+    {
+      "id": "TC-U010",
+      "name": "CSS样式文件",
+      "passed": true,
+      "message": "6802 bytes, 1ms",
+      "duration": 1,
+      "timestamp": "2026-02-16T03:18:02.947Z"
+    },
+    {
+      "id": "TC-U011",
+      "name": "JavaScript文件",
+      "passed": true,
+      "message": "8169 bytes, 2ms",
+      "duration": 2,
+      "timestamp": "2026-02-16T03:18:03.050Z"
+    },
+    {
+      "id": "TC-P001",
+      "name": "健康检查响应时间",
+      "passed": true,
+      "message": "平均: 2ms",
+      "duration": 0,
+      "timestamp": "2026-02-16T03:18:03.800Z"
+    },
+    {
+      "id": "TC-P002",
+      "name": "周边机场响应时间",
+      "passed": true,
+      "message": "平均: 523ms",
+      "duration": 0,
+      "timestamp": "2026-02-16T03:18:05.994Z"
+    },
+    {
+      "id": "TC-P003",
+      "name": "城市列表响应时间",
+      "passed": true,
+      "message": "平均: 2ms",
+      "duration": 0,
+      "timestamp": "2026-02-16T03:18:06.638Z"
+    }
+  ]
+}
