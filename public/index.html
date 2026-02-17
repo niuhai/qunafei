@@ -3,43 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>航班价格周边机场筛选</title>
+  <title>航班价格周边机场筛选 - 找到最优出行方案</title>
+  <meta name="description" content="比较周边机场航班价格，综合机票和地面交通成本，找到最划算的出行方案">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
+  <a href="#main-content" class="skip-link">跳到主要内容</a>
   <div class="container">
-    <header class="header">
-      <h1>🛫 航班价格周边机场筛选</h1>
+    <header class="header" role="banner">
+      <div class="header-top">
+        <h1>🛫 航班价格周边机场筛选</h1>
+        <button class="theme-toggle" id="themeToggle" title="切换主题">
+          <span class="theme-icon-light">☀️</span>
+          <span class="theme-icon-dark">🌙</span>
+        </button>
+      </div>
       <p class="subtitle">比较周边机场航班价格，找到最优出行方案</p>
+      <div class="quick-tips" id="quickTips">
+        <span class="tip-item" data-city="北京">📍 北京</span>
+        <span class="tip-item" data-city="上海">📍 上海</span>
+        <span class="tip-item" data-city="广州">📍 广州</span>
+        <span class="tip-item" data-city="深圳">📍 深圳</span>
+      </div>
     </header>
 
-    <section class="search-panel">
+    <section class="search-panel" role="search" aria-label="航班搜索">
       <div class="search-row">
         <div class="form-group">
-          <label for="originCity">出发城市</label>
+          <label for="originCity">
+            出发城市
+            <span class="help-icon" title="支持多选，输入城市名称后从下拉列表选择">?</span>
+            <button class="btn-location" id="btnLocation" title="使用当前位置">📍</button>
+          </label>
           <div class="input-wrapper">
-            <input type="text" id="originCity" placeholder="输入城市名称（如：烟台）" autocomplete="off">
-            <div class="city-dropdown" id="cityDropdown"></div>
+            <input type="text" id="originCity" placeholder="输入城市名称（如：烟台）" autocomplete="off" aria-describedby="originHelp">
+            <div class="city-dropdown" id="cityDropdown" role="listbox"></div>
           </div>
-          <div class="selected-cities" id="selectedCities"></div>
+          <div class="selected-cities" id="selectedCities" aria-label="已选择的城市"></div>
+          <small id="originHelp" class="help-text">输入城市名称，支持多选或点击📍使用当前位置</small>
         </div>
 
         <div class="form-group">
-          <label for="destination">目的地</label>
+          <label for="destination">
+            目的地
+            <span class="help-icon" title="支持多选，可同时搜索多个目的地">?</span>
+          </label>
           <div class="input-wrapper">
-            <input type="text" id="destination" placeholder="输入城市或机场名称" autocomplete="off">
-            <div class="city-dropdown" id="destDropdown"></div>
+            <input type="text" id="destination" placeholder="输入城市或机场名称（支持多选）" autocomplete="off" aria-describedby="destHelp">
+            <div class="city-dropdown" id="destDropdown" role="listbox"></div>
           </div>
+          <div class="selected-destinations" id="selectedDestinations" aria-label="已选择的目的地"></div>
+          <small id="destHelp" class="help-text">支持多选，如同时选择上海虹桥和浦东机场</small>
         </div>
 
         <div class="form-group">
-          <label for="departDate">出发日期</label>
-          <input type="date" id="departDate">
+          <label for="departDate">
+            出发日期
+            <span class="help-icon" title="选择出行日期范围">?</span>
+          </label>
+          <div class="date-range-wrapper">
+            <input type="date" id="departDate" class="date-input">
+            <span class="date-separator">至</span>
+            <input type="date" id="returnDate" class="date-input" placeholder="结束日期（可选）">
+          </div>
+          <small class="help-text">可只选一天，或选择日期范围查询多日价格</small>
         </div>
 
-        <button class="btn-search" id="btnSearch">
-          <span class="btn-text">查询</span>
-          <span class="btn-loading" style="display:none;">查询中...</span>
+        <button class="btn-search" id="btnSearch" aria-label="查询航班">
+          <span class="btn-text">
+            <span class="btn-icon">🔍</span> 查询
+          </span>
+          <span class="btn-loading" style="display:none;">
+            <span class="spinner"></span> 查询中...
+          </span>
         </button>
       </div>
 
@@ -47,39 +88,180 @@
         <div class="form-group">
           <label for="radius">搜索半径</label>
           <select id="radius">
-            <option value="100">100km</option>
-            <option value="200" selected>200km</option>
-            <option value="300">300km</option>
-            <option value="500">500km</option>
+            <option value="100">100km (邻近城市)</option>
+            <option value="200" selected>200km (周边城市)</option>
+            <option value="300">300km (跨省城市)</option>
+            <option value="500">500km (广域范围)</option>
           </select>
         </div>
 
         <div class="form-group">
           <label for="sortBy">排序方式</label>
           <select id="sortBy">
-            <option value="totalCost">综合成本最低</option>
-            <option value="ticketPrice">机票价格最低</option>
-            <option value="totalTime">总时间最短</option>
+            <option value="totalCost">🎯 综合成本最低</option>
+            <option value="ticketPrice">✈️ 机票价格最低</option>
+            <option value="totalTime">⏱️ 总时间最短</option>
           </select>
+        </div>
+
+        <div class="form-group">
+          <label for="flexDays">灵活日期</label>
+          <select id="flexDays">
+            <option value="0">仅当天</option>
+            <option value="1">前后1天</option>
+            <option value="2">前后2天</option>
+            <option value="3" selected>前后3天</option>
+            <option value="5">前后5天</option>
+            <option value="7">前后7天</option>
+          </select>
+        </div>
+
+        <div class="form-group filters-toggle">
+          <button class="btn-toggle" id="toggleFilters">
+            <span class="toggle-icon">⚙️</span> 更多筛选
+          </button>
+        </div>
+      </div>
+
+      <div class="advanced-filters" id="advancedFilters" style="display:none;">
+        <div class="filter-group">
+          <label class="filter-label">
+            <input type="checkbox" id="directOnly">
+            <span class="filter-text">仅直飞</span>
+          </label>
+          <label class="filter-label">
+            <input type="checkbox" id="morningOnly">
+            <span class="filter-text">早班机 (06:00-12:00)</span>
+          </label>
+          <label class="filter-label">
+            <input type="checkbox" id="afternoonOnly">
+            <span class="filter-text">午班机 (12:00-18:00)</span>
+          </label>
+        </div>
+        <div class="filter-group special-price-filter">
+          <label class="filter-label main-label">
+            <input type="checkbox" id="specialPriceOnly">
+            <span class="filter-text">🏷️ 特价筛选</span>
+          </label>
+          <div class="special-price-options" id="specialPriceOptions" style="display:none;">
+            <div class="price-threshold">
+              <label>价格比选定日期低</label>
+              <div class="threshold-input">
+                <input type="number" id="priceThreshold" value="100" min="50" max="1000" step="50">
+                <span>元以上</span>
+              </div>
+            </div>
+            <small class="help-text">系统会在灵活日期范围内搜索比选定日期更便宜的航班</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-actions">
+        <button class="btn-secondary" id="btnCalendar">📅 价格日历</button>
+        <button class="btn-secondary" id="btnInterline">🚄 高铁联程</button>
+      </div>
+    </section>
+
+    <section class="interline-panel" id="interlinePanel" style="display:none;">
+      <div class="interline-header">
+        <h3>🚄 高铁+飞机 联程推荐</h3>
+        <button class="btn-close" id="closeInterline">✕</button>
+      </div>
+      <div class="interline-tabs">
+        <button class="tab-btn active" data-tab="all">全部方案</button>
+        <button class="tab-btn" data-tab="trainThenFlight">高铁→飞机</button>
+        <button class="tab-btn" data-tab="flightThenTrain">飞机→高铁</button>
+        <button class="tab-btn" data-tab="direct">仅直飞</button>
+      </div>
+      <div class="interline-options" id="interlineOptions">
+        <div class="loading">正在搜索联程方案...</div>
+      </div>
+    </section>
+
+    <section class="calendar-panel" id="calendarPanel" style="display:none;">
+      <div class="calendar-header">
+        <button class="btn-nav" id="prevMonth">◀</button>
+        <h3 id="calendarTitle">价格日历</h3>
+        <button class="btn-nav" id="nextMonth">▶</button>
+      </div>
+      <div class="calendar-summary" id="calendarSummary"></div>
+      <div class="calendar-weekdays">
+        <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+    </section>
+
+    <section class="history-panel" id="historyPanel" style="display:none;">
+      <div class="history-header">
+        <h3>📋 最近搜索</h3>
+        <button class="btn-clear-history" id="clearHistory" title="清空历史">✕</button>
+      </div>
+      <div class="history-list" id="historyList"></div>
+    </section>
+
+    <section class="welcome-panel" id="welcomePanel">
+      <div class="welcome-content">
+        <div class="welcome-icon">🎯</div>
+        <h2>开始规划您的旅程</h2>
+        <p class="welcome-desc">输入出发城市和目的地，我们将帮您找到周边机场的最优方案</p>
+        <div class="welcome-features">
+          <div class="feature-item">
+            <span class="feature-icon">💰</span>
+            <span class="feature-text">综合机票 + 交通成本</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">🗺️</span>
+            <span class="feature-text">自动筛选周边机场</span>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">⚡</span>
+            <span class="feature-text">智能推荐最优方案</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="airports-panel" id="airportsPanel" style="display:none;">
-      <h3>📍 周边机场</h3>
+    <section class="airports-panel" id="airportsPanel" role="region" aria-label="周边机场列表" style="display:none;">
+      <div class="panel-header">
+        <h3>📍 周边机场</h3>
+        <div class="panel-actions">
+          <span class="panel-badge" id="airportCount">0 个机场</span>
+          <button class="btn-map-toggle" id="btnMap" title="显示地图">🗺️</button>
+        </div>
+      </div>
       <div class="airports-list" id="airportsList"></div>
     </section>
 
-    <section class="results-panel" id="resultsPanel" style="display:none;">
-      <h3>🏆 推荐方案</h3>
+    <section class="map-panel" id="mapPanel" style="display:none;">
+      <div class="panel-header">
+        <h3>🗺️ 机场位置地图</h3>
+        <button class="btn-close-map" id="closeMap" title="关闭地图">✕</button>
+      </div>
+      <div class="map-container" id="mapContainer"></div>
+    </section>
+
+    <section class="results-panel" id="resultsPanel" role="region" aria-label="搜索结果" aria-live="polite" style="display:none;">
+      <div class="panel-header">
+        <h3>🏆 推荐方案</h3>
+        <div class="panel-actions">
+          <button class="btn-export" id="btnExport" title="导出数据">📊 导出</button>
+          <button class="btn-view-toggle" id="viewToggle" title="切换视图">📋</button>
+        </div>
+      </div>
+      <div class="results-summary" id="resultsSummary"></div>
       <div class="results-list" id="resultsList"></div>
     </section>
 
     <section class="error-panel" id="errorPanel" style="display:none;">
+      <div class="error-icon">😕</div>
       <div class="error-message" id="errorMessage"></div>
+      <button class="btn-retry" id="btnRetry">🔄 重试</button>
     </section>
   </div>
 
+  <div class="toast" id="toast"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

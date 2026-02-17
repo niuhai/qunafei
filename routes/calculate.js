@@ -25,6 +25,14 @@ router.post('/recommend', async (req, res) => {
     });
   }
 
+  let resolvedDest = destination;
+  const destResult = helpers.resolveDestination(destination);
+  if (destResult.type === 'airport') {
+    resolvedDest = destResult.code;
+  } else if (destResult.type === 'city') {
+    resolvedDest = destResult.name;
+  }
+
   const radiusNum = parseInt(radius) || config.search.defaultRadius;
   const prefs = preferences || {};
 
@@ -48,7 +56,7 @@ router.post('/recommend', async (req, res) => {
 
       const flightResults = await crawlerService.searchMultiAirportFlights(
         airportCodes,
-        destination,
+        resolvedDest,
         date
       );
 
@@ -69,6 +77,7 @@ router.post('/recommend', async (req, res) => {
         const flightDuration = recommendService.getFlightDuration(bestFlight);
         const totalTime = transport.time + flightDuration;
 
+        const destAirport = helpers.getAirportByCode(bestFlight.to);
         allRecommendations.push({
           originCity: city,
           airport: {
@@ -80,6 +89,10 @@ router.post('/recommend', async (req, res) => {
           flight: {
             flightNo: bestFlight.flightNo,
             airline: bestFlight.airline,
+            from: bestFlight.from,
+            to: bestFlight.to,
+            toName: destAirport ? destAirport.name : bestFlight.to,
+            toCity: destAirport ? destAirport.city : '',
             depTime: bestFlight.depTime,
             arrTime: bestFlight.arrTime,
             price: bestFlight.price,
@@ -147,6 +160,20 @@ function filterFlightsByPreferences(flights, prefs) {
     if (prefs.maxTransportTime && prefs.transportTime) {
       if (prefs.transportTime > prefs.maxTransportTime) return false;
     }
+    
+    if (prefs.timeFilter) {
+      const depHour = parseInt(flight.depTime.split(':')[0]);
+      if (prefs.timeFilter === 'morning' && (depHour < 6 || depHour >= 12)) {
+        return false;
+      }
+      if (prefs.timeFilter === 'afternoon' && (depHour < 12 || depHour >= 18)) {
+        return false;
+      }
+      if (prefs.timeFilter === 'evening' && (depHour < 18 || depHour >= 24)) {
+        return false;
+      }
+    }
+    
     return true;
   });
 }

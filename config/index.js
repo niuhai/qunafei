@@ -7,17 +7,26 @@
 
 module.exports = {
   /**
+   * 飞常准API配置
+   * 用于航班数据查询（推荐）
+   * 申请地址：https://www.variflight.com/
+   * 免费额度：1000次/天
+   */
+  variflight: {
+    key: process.env.VARIFLIGHT_KEY || '',
+    baseUrl: 'https://api.variflight.com',
+    dailyQuota: 1000
+  },
+
+  /**
    * 高德地图API配置
    * 用于地理编码、路径规划等功能
    * 申请地址：https://lbs.amap.com/
    */
   amap: {
     key: '724e0612e6014b4b03060ae7b10f8508',
-    // 地理编码API地址
     geocodeUrl: 'https://restapi.amap.com/v3/geocode/geo',
-    // 路径规划API地址
     directionUrl: 'https://restapi.amap.com/v3/direction/driving',
-    // 每日免费额度：30万次
     dailyQuota: 300000
   },
 

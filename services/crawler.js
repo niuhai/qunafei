@@ -100,6 +100,9 @@ function generateMockFlights(fromCode, toCode, date) {
     { name: '四川航空', prefix: '3U' }
   ];
 
+  const transferAirports = ['PEK', 'PVG', 'CAN', 'CTU', 'XIY', 'WUH', 'CSX', 'KMG'];
+  const allAirports = helpers.getAirports();
+
   const flights = [];
   const numFlights = Math.floor(Math.random() * 5) + 3;
   const basePrice = Math.floor(Math.random() * 500) + 400;
@@ -113,8 +116,9 @@ function generateMockFlights(fromCode, toCode, date) {
     const arrHour = depHour + Math.floor(duration / 60);
     const arrMin = (depMin + duration % 60) % 60;
     const price = basePrice + Math.floor(Math.random() * 300);
+    const isDirect = Math.random() > 0.25;
 
-    flights.push({
+    const flight = {
       flightNo,
       airline: airline.name,
       from: fromCode,
@@ -123,9 +127,24 @@ function generateMockFlights(fromCode, toCode, date) {
       arrTime: `${String(arrHour).padStart(2, '0')}:${String(arrMin).padStart(2, '0')}`,
       price,
       discount: Math.round((price / 1360) * 10) / 10,
-      isDirect: Math.random() > 0.2,
+      isDirect,
       aircraft: ['Boeing 737', 'Airbus A320', 'Airbus A321', 'Boeing 787'][Math.floor(Math.random() * 4)]
-    });
+    };
+
+    if (!isDirect) {
+      const transferCode = transferAirports[Math.floor(Math.random() * transferAirports.length)];
+      const transferAirport = allAirports.find(a => a.code === transferCode);
+      const waitHours = Math.floor(Math.random() * 4) + 1;
+      const waitMins = Math.floor(Math.random() * 60);
+      
+      flight.transferInfo = {
+        airport: transferAirport ? `${transferAirport.city} (${transferCode})` : transferCode,
+        airportCode: transferCode,
+        waitTime: `${waitHours}小时${waitMins > 0 ? waitMins + '分钟' : ''}`
+      };
+    }
+
+    flights.push(flight);
   }
 
   return flights.sort((a, b) => a.depTime.localeCompare(b.depTime));

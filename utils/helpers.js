@@ -36,6 +36,77 @@ function getCities() {
   return data ? data.cities : {};
 }
 
+function resolveDestination(destInput) {
+  const cities = getCities();
+  const airports = getAirports();
+  
+  const input = destInput.trim();
+  
+  if (cities[input]) {
+    const city = cities[input];
+    
+    if (city.alias && city.alias.length > 0) {
+      const primaryCity = city.alias[0];
+      const primaryAirport = airports.find(a => a.city === primaryCity && a.enabled);
+      if (primaryAirport) {
+        return {
+          type: 'airport',
+          code: primaryAirport.code,
+          city: primaryCity,
+          country: city.country
+        };
+      }
+    }
+    
+    const directAirport = airports.find(a => a.city === input && a.enabled);
+    if (directAirport) {
+      return {
+        type: 'airport',
+        code: directAirport.code,
+        city: input,
+        country: city.country
+      };
+    }
+    
+    return {
+      type: 'city',
+      name: input,
+      country: city.country,
+      lat: city.lat,
+      lng: city.lng
+    };
+  }
+  
+  const byCode = airports.find(a => a.code.toUpperCase() === input.toUpperCase() && a.enabled);
+  if (byCode) {
+    const cityData = cities[byCode.city];
+    return {
+      type: 'airport',
+      code: byCode.code,
+      city: byCode.city,
+      country: cityData?.country || byCode.province
+    };
+  }
+  
+  const byName = airports.find(a => 
+    (a.name.includes(input) || a.city === input) && a.enabled
+  );
+  if (byName) {
+    const cityData = cities[byName.city];
+    return {
+      type: 'airport',
+      code: byName.code,
+      city: byName.city,
+      country: cityData?.country || byName.province
+    };
+  }
+  
+  return {
+    type: 'unknown',
+    value: input
+  };
+}
+
 function getCityCoordinate(cityName) {
   const cities = getCities();
   return cities[cityName] || null;
@@ -102,6 +173,7 @@ module.exports = {
   getCities,
   getCityCoordinate,
   getAirportByCode,
+  resolveDestination,
   getCache,
   setCache,
   getCachedFlights,
