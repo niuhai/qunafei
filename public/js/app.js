@@ -291,6 +291,10 @@ function hapticFeedback(type = 'light') {
 function initDateInput() {
   const dateInput = document.getElementById('departDate');
   const returnDateInput = document.getElementById('returnDate');
+  if (!dateInput || !returnDateInput) {
+    console.error('Date input elements not found');
+    return;
+  }
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -366,6 +370,11 @@ function renderHistory() {
   const panel = document.getElementById('historyPanel');
   const list = document.getElementById('historyList');
   
+  if (!panel || !list) {
+    console.error('History panel elements not found');
+    return;
+  }
+  
   if (searchHistory.length === 0) {
     panel.style.display = 'none';
     return;
@@ -392,8 +401,10 @@ function renderHistory() {
 function applyHistory(history) {
   selectedCities = [history.origin];
   renderSelectedCities();
-  document.getElementById('destination').value = history.dest;
-  document.getElementById('departDate').value = history.date;
+  const destination = document.getElementById('destination');
+  const departDate = document.getElementById('departDate');
+  if (destination) destination.value = history.dest;
+  if (departDate) departDate.value = history.date;
   showToast('已填充搜索条件', 'success');
 }
 
@@ -409,20 +420,32 @@ function resetAllSelections() {
   selectedDestinations = [];
   renderSelectedCities();
   renderSelectedDestinations();
-  document.getElementById('originCity').value = '';
-  document.getElementById('destination').value = '';
-  document.getElementById('radius').value = '200';
-  document.getElementById('sortBy').value = 'totalCost';
-  document.getElementById('flexDays').value = '3';
-  document.getElementById('directOnly').checked = false;
-  document.getElementById('morningOnly').checked = false;
-  document.getElementById('afternoonOnly').checked = false;
+  const originCity = document.getElementById('originCity');
+  const destination = document.getElementById('destination');
+  const radius = document.getElementById('radius');
+  const sortBy = document.getElementById('sortBy');
+  const flexDays = document.getElementById('flexDays');
+  const directOnly = document.getElementById('directOnly');
+  const morningOnly = document.getElementById('morningOnly');
+  const afternoonOnly = document.getElementById('afternoonOnly');
+  const welcomePanel = document.getElementById('welcomePanel');
+  
+  if (originCity) originCity.value = '';
+  if (destination) destination.value = '';
+  if (radius) radius.value = '200';
+  if (sortBy) sortBy.value = 'totalCost';
+  if (flexDays) flexDays.value = '3';
+  if (directOnly) directOnly.checked = false;
+  if (morningOnly) morningOnly.checked = false;
+  if (afternoonOnly) afternoonOnly.checked = false;
   
   initDateInput();
   
   hideError();
   hidePanels();
-  document.getElementById('welcomePanel').style.display = 'block';
+  if (welcomePanel) {
+    welcomePanel.style.display = 'block';
+  }
   
   showToast('已重置所有选项', 'success');
 }
@@ -596,18 +619,31 @@ function bindEvents() {
     }
   });
 
-  document.getElementById('btnSearch').addEventListener('click', handleSearch);
-  document.getElementById('btnRetry').addEventListener('click', handleSearch);
-  document.getElementById('toggleFilters').addEventListener('click', toggleFilters);
-  document.getElementById('clearHistory').addEventListener('click', clearHistory);
-  document.getElementById('btnCalendar').addEventListener('click', handleCalendar);
-  document.getElementById('prevMonth').addEventListener('click', () => changeMonth(-1));
-  document.getElementById('nextMonth').addEventListener('click', () => changeMonth(1));
-  document.getElementById('btnMap').addEventListener('click', toggleMap);
-  document.getElementById('closeMap').addEventListener('click', closeMap);
-  document.getElementById('btnExport').addEventListener('click', exportResults);
-  document.getElementById('btnInterline').addEventListener('click', handleInterline);
-  document.getElementById('closeInterline').addEventListener('click', closeInterlinePanel);
+  const btnSearch = document.getElementById('btnSearch');
+  const btnRetry = document.getElementById('btnRetry');
+  const toggleFiltersBtn = document.getElementById('toggleFilters');
+  const clearHistoryBtn = document.getElementById('clearHistory');
+  const btnCalendar = document.getElementById('btnCalendar');
+  const prevMonth = document.getElementById('prevMonth');
+  const nextMonth = document.getElementById('nextMonth');
+  const btnMap = document.getElementById('btnMap');
+  const closeMap = document.getElementById('closeMap');
+  const btnExport = document.getElementById('btnExport');
+  const btnInterline = document.getElementById('btnInterline');
+  const closeInterline = document.getElementById('closeInterline');
+  
+  if (btnSearch) btnSearch.addEventListener('click', handleSearch);
+  if (btnRetry) btnRetry.addEventListener('click', handleSearch);
+  if (toggleFiltersBtn) toggleFiltersBtn.addEventListener('click', toggleFilters);
+  if (clearHistoryBtn) clearHistoryBtn.addEventListener('click', clearHistory);
+  if (btnCalendar) btnCalendar.addEventListener('click', handleCalendar);
+  if (prevMonth) prevMonth.addEventListener('click', () => changeMonth(-1));
+  if (nextMonth) nextMonth.addEventListener('click', () => changeMonth(1));
+  if (btnMap) btnMap.addEventListener('click', toggleMap);
+  if (closeMap) closeMap.addEventListener('click', closeMapPanel);
+  if (btnExport) btnExport.addEventListener('click', exportResults);
+  if (btnInterline) btnInterline.addEventListener('click', handleInterline);
+  if (closeInterline) closeInterline.addEventListener('click', closeInterlinePanel);
   
   const specialPriceCheckbox = document.getElementById('specialPriceOnly');
   if (specialPriceCheckbox) {
@@ -648,7 +684,8 @@ function bindEvents() {
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.target.closest('.city-dropdown')) {
-      const isSearching = !document.getElementById('btnSearch').disabled;
+      const btnSearch = document.getElementById('btnSearch');
+      const isSearching = btnSearch && !btnSearch.disabled;
       if (isSearching) {
         handleSearch();
       }
@@ -657,22 +694,28 @@ function bindEvents() {
       hideCityDropdown();
       hideDestDropdown();
       closeMap();
-      document.getElementById('calendarPanel').style.display = 'none';
+      const calendarPanel = document.getElementById('calendarPanel');
+      if (calendarPanel) {
+        calendarPanel.style.display = 'none';
+      }
     }
     
     if (e.ctrlKey || e.metaKey) {
       switch(e.key.toLowerCase()) {
         case 'k':
           e.preventDefault();
-          document.getElementById('originCity').focus();
+          const originCityInput = document.getElementById('originCity');
+          if (originCityInput) originCityInput.focus();
           break;
         case 'l':
           e.preventDefault();
-          document.getElementById('destination').focus();
+          const destinationInput = document.getElementById('destination');
+          if (destinationInput) destinationInput.focus();
           break;
         case 'd':
           e.preventDefault();
-          document.getElementById('departDate').focus();
+          const departDateInput = document.getElementById('departDate');
+          if (departDateInput) departDateInput.focus();
           break;
         case 'm':
           e.preventDefault();
@@ -689,7 +732,9 @@ function bindEvents() {
         case 'h':
           e.preventDefault();
           const historyPanel = document.getElementById('historyPanel');
-          historyPanel.style.display = historyPanel.style.display === 'none' ? 'block' : 'none';
+          if (historyPanel) {
+            historyPanel.style.display = historyPanel.style.display === 'none' ? 'block' : 'none';
+          }
           break;
       }
     }
@@ -766,10 +811,12 @@ function showCityDropdown(keyword) {
   `).join('');
 
   dropdown.querySelectorAll('.city-item').forEach(item => {
-    item.addEventListener('click', () => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
       addCity(item.dataset.city);
       hideCityDropdown();
-      document.getElementById('originCity').value = '';
+      const originCityInput = document.getElementById('originCity');
+      if (originCityInput) originCityInput.value = '';
     });
   });
 
@@ -777,7 +824,10 @@ function showCityDropdown(keyword) {
 }
 
 function hideCityDropdown() {
-  document.getElementById('cityDropdown').classList.remove('show');
+  const dropdown = document.getElementById('cityDropdown');
+  if (dropdown) {
+    dropdown.classList.remove('show');
+  }
 }
 
 function showDestDropdown(keyword) {
@@ -819,7 +869,8 @@ function showDestDropdown(keyword) {
   `}).join('');
 
   dropdown.querySelectorAll('.city-item').forEach(item => {
-    item.addEventListener('click', () => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
       const code = item.dataset.code;
       const name = item.dataset.name;
       const city = item.dataset.city;
@@ -830,8 +881,11 @@ function showDestDropdown(keyword) {
         addDestination(code, name, city);
       }
       
-      document.getElementById('destination').value = '';
-      document.getElementById('destination').focus();
+      const destinationInput = document.getElementById('destination');
+      if (destinationInput) {
+        destinationInput.value = '';
+        destinationInput.focus();
+      }
       showDestDropdown(keyword);
     });
   });
@@ -840,7 +894,10 @@ function showDestDropdown(keyword) {
 }
 
 function hideDestDropdown() {
-  document.getElementById('destDropdown').classList.remove('show');
+  const dropdown = document.getElementById('destDropdown');
+  if (dropdown) {
+    dropdown.classList.remove('show');
+  }
 }
 
 function addDestination(code, name, city) {
@@ -860,6 +917,10 @@ function removeDestination(code) {
 
 function renderSelectedDestinations() {
   const container = document.getElementById('selectedDestinations');
+  if (!container) {
+    console.error('Selected destinations container not found');
+    return;
+  }
   if (selectedDestinations.length === 0) {
     container.innerHTML = '';
     return;
@@ -889,6 +950,10 @@ function removeCity(cityName) {
 
 function renderSelectedCities() {
   const container = document.getElementById('selectedCities');
+  if (!container) {
+    console.error('Selected cities container not found');
+    return;
+  }
   container.innerHTML = selectedCities.map(city => `
     <span class="city-tag">
       ${city}
@@ -904,27 +969,39 @@ function renderSelectedCities() {
 function toggleFilters() {
   const filters = document.getElementById('advancedFilters');
   const btn = document.getElementById('toggleFilters');
+  if (!filters || !btn) return;
+  const icon = btn.querySelector('.toggle-icon');
   if (filters.style.display === 'none') {
     filters.style.display = 'block';
-    btn.querySelector('.toggle-icon').textContent = '▼';
+    if (icon) icon.textContent = '▼';
   } else {
     filters.style.display = 'none';
-    btn.querySelector('.toggle-icon').textContent = '⚙️';
+    if (icon) icon.textContent = '⚙️';
   }
 }
 
 async function handleSearch() {
-  const originCity = selectedCities.length > 0 ? selectedCities.join(',') : document.getElementById('originCity').value.trim();
+  const originCityInput = document.getElementById('originCity');
+  const destinationInput = document.getElementById('destination');
+  const departDateInput = document.getElementById('departDate');
+  const returnDateInput = document.getElementById('returnDate');
+  const radiusInput = document.getElementById('radius');
+  const sortByInput = document.getElementById('sortBy');
+  const flexDaysInput = document.getElementById('flexDays');
+  const specialPriceOnlyInput = document.getElementById('specialPriceOnly');
+  const priceThresholdInput = document.getElementById('priceThreshold');
+  
+  const originCity = selectedCities.length > 0 ? selectedCities.join(',') : (originCityInput ? originCityInput.value.trim() : '');
   const destinations = selectedDestinations.length > 0 
     ? selectedDestinations.map(d => d.code) 
-    : [document.getElementById('destination').value.trim()].filter(Boolean);
-  const date = document.getElementById('departDate').value;
-  const returnDate = document.getElementById('returnDate').value;
-  const radius = document.getElementById('radius').value;
-  const sortBy = document.getElementById('sortBy').value;
-  const flexDays = parseInt(document.getElementById('flexDays').value) || 0;
-  const specialPriceOnly = document.getElementById('specialPriceOnly')?.checked || false;
-  const priceThreshold = parseInt(document.getElementById('priceThreshold')?.value) || 100;
+    : [destinationInput ? destinationInput.value.trim() : ''].filter(Boolean);
+  const date = departDateInput ? departDateInput.value : '';
+  const returnDate = returnDateInput ? returnDateInput.value : '';
+  const radius = radiusInput ? radiusInput.value : '200';
+  const sortBy = sortByInput ? sortByInput.value : 'totalCost';
+  const flexDays = parseInt(flexDaysInput ? flexDaysInput.value : '0') || 0;
+  const specialPriceOnly = specialPriceOnlyInput?.checked || false;
+  const priceThreshold = parseInt(priceThresholdInput?.value) || 100;
 
   if (!originCity) {
     showError('请输入出发城市');
@@ -944,8 +1021,14 @@ async function handleSearch() {
   setLoading(true);
   hideError();
   hidePanels();
-  document.getElementById('welcomePanel').style.display = 'none';
-  document.getElementById('calendarPanel').style.display = 'none';
+  const welcomePanel = document.getElementById('welcomePanel');
+  const calendarPanel = document.getElementById('calendarPanel');
+  if (welcomePanel) {
+    welcomePanel.style.display = 'none';
+  }
+  if (calendarPanel) {
+    calendarPanel.style.display = 'none';
+  }
 
   try {
     if (specialPriceOnly && flexDays > 0) {
@@ -1074,9 +1157,15 @@ function showDateRangeResults(data, airports) {
   const resultsPanel = document.getElementById('resultsPanel');
   const resultsList = document.getElementById('resultsList');
   const summary = document.getElementById('resultsSummary');
+  const count = document.getElementById('airportCount');
+
+  if (!panel || !list || !resultsPanel || !resultsList || !summary || !count) {
+    console.error('Date range results elements not found');
+    return;
+  }
 
   panel.style.display = 'block';
-  document.getElementById('airportCount').textContent = `${airports.length} 个机场`;
+  count.textContent = `${airports.length} 个机场`;
   
   list.innerHTML = airports.map(a => `
     <div class="airport-card">
@@ -1184,9 +1273,12 @@ function showDateRangeResults(data, airports) {
 }
 
 function showDateFlights(date, count) {
-  document.getElementById('departDate').value = date;
-  document.getElementById('returnDate').value = '';
-  document.getElementById('flexDays').value = '0';
+  const departDateInput = document.getElementById('departDate');
+  const returnDateInput = document.getElementById('returnDate');
+  const flexDaysInput = document.getElementById('flexDays');
+  if (departDateInput) departDateInput.value = date;
+  if (returnDateInput) returnDateInput.value = '';
+  if (flexDaysInput) flexDaysInput.value = '0';
   handleSearch();
 }
 
@@ -1313,9 +1405,15 @@ function showNoSpecialPriceResult(originPrice, threshold, flexDays, airports) {
   const list = document.getElementById('airportsList');
   const resultsPanel = document.getElementById('resultsPanel');
   const resultsList = document.getElementById('resultsList');
+  const count = document.getElementById('airportCount');
+
+  if (!panel || !list || !resultsPanel || !resultsList || !count) {
+    console.error('No special price result elements not found');
+    return;
+  }
 
   panel.style.display = 'block';
-  document.getElementById('airportCount').textContent = `${airports.length} 个机场`;
+  count.textContent = `${airports.length} 个机场`;
   
   list.innerHTML = airports.map(a => `
     <div class="airport-card">
@@ -1355,9 +1453,15 @@ function showSpecialPriceResults(specialResults, originPrice, threshold, flexDat
   const resultsPanel = document.getElementById('resultsPanel');
   const resultsList = document.getElementById('resultsList');
   const summary = document.getElementById('resultsSummary');
+  const count = document.getElementById('airportCount');
+
+  if (!panel || !list || !resultsPanel || !resultsList || !summary || !count) {
+    console.error('Special price results elements not found');
+    return;
+  }
 
   panel.style.display = 'block';
-  document.getElementById('airportCount').textContent = `${airports.length} 个机场`;
+  count.textContent = `${airports.length} 个机场`;
   
   list.innerHTML = airports.map(a => `
     <div class="airport-card">
@@ -1474,9 +1578,15 @@ function showFlexibleResults(data, airports) {
   const list = document.getElementById('airportsList');
   const resultsPanel = document.getElementById('resultsPanel');
   const resultsList = document.getElementById('resultsList');
+  const count = document.getElementById('airportCount');
+
+  if (!panel || !list || !resultsPanel || !resultsList || !count) {
+    console.error('Flexible results elements not found');
+    return;
+  }
 
   panel.style.display = 'block';
-  document.getElementById('airportCount').textContent = `${airports.length} 个机场`;
+  count.textContent = `${airports.length} 个机场`;
   
   list.innerHTML = airports.map(a => `
     <div class="airport-card">
@@ -1574,12 +1684,16 @@ function selectFlexibleDate(date) {
 
 function setLoading(loading) {
   const btn = document.getElementById('btnSearch');
+  if (!btn) {
+    console.error('Search button not found');
+    return;
+  }
   const btnText = btn.querySelector('.btn-text');
   const btnLoading = btn.querySelector('.btn-loading');
   
   btn.disabled = loading;
-  btnText.style.display = loading ? 'none' : 'inline';
-  btnLoading.style.display = loading ? 'inline' : 'none';
+  if (btnText) btnText.style.display = loading ? 'none' : 'inline';
+  if (btnLoading) btnLoading.style.display = loading ? 'inline' : 'none';
   
   if (loading) {
     showLoadingSkeleton();
@@ -1591,6 +1705,11 @@ function setLoading(loading) {
 function showLoadingSkeleton() {
   const airportsPanel = document.getElementById('airportsPanel');
   const resultsPanel = document.getElementById('resultsPanel');
+  
+  if (!airportsPanel || !resultsPanel) {
+    console.error('Loading skeleton elements not found');
+    return;
+  }
   
   airportsPanel.style.display = 'block';
   airportsPanel.innerHTML = `
@@ -1631,26 +1750,45 @@ function hideLoadingSkeleton() {
 }
 
 function hidePanels() {
-  document.getElementById('airportsPanel').style.display = 'none';
-  document.getElementById('resultsPanel').style.display = 'none';
+  const airportsPanel = document.getElementById('airportsPanel');
+  const resultsPanel = document.getElementById('resultsPanel');
+  if (airportsPanel) {
+    airportsPanel.style.display = 'none';
+  }
+  if (resultsPanel) {
+    resultsPanel.style.display = 'none';
+  }
 }
 
 function showError(message) {
   const panel = document.getElementById('errorPanel');
   const msg = document.getElementById('errorMessage');
+  if (!panel || !msg) {
+    console.error('Error panel elements not found:', message);
+    alert(message);
+    return;
+  }
   msg.textContent = message;
   panel.style.display = 'block';
   panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 function hideError() {
-  document.getElementById('errorPanel').style.display = 'none';
+  const panel = document.getElementById('errorPanel');
+  if (panel) {
+    panel.style.display = 'none';
+  }
 }
 
 function showAirports(data) {
   const panel = document.getElementById('airportsPanel');
   const list = document.getElementById('airportsList');
   const count = document.getElementById('airportCount');
+  
+  if (!panel || !list || !count) {
+    console.error('Airports panel elements not found');
+    return;
+  }
   
   count.textContent = `${data.recommendations.length} 个机场`;
   
@@ -1698,6 +1836,11 @@ function showResults(data) {
   const panel = document.getElementById('resultsPanel');
   const list = document.getElementById('resultsList');
   const summary = document.getElementById('resultsSummary');
+  
+  if (!panel || !list || !summary) {
+    console.error('Results panel elements not found');
+    return;
+  }
   
   currentResultsData = data;
   
@@ -1849,6 +1992,10 @@ function calculateFlightDuration(depTime, arrTime) {
 
 function showToast(message, type = 'default') {
   const toast = document.getElementById('toast');
+  if (!toast) {
+    console.error('Toast element not found:', message);
+    return;
+  }
   toast.textContent = message;
   toast.className = 'toast';
   if (type === 'success' || type === 'error') {
@@ -1941,8 +2088,10 @@ function triggerErrorShake(element) {
 }
 
 async function handleCalendar() {
-  const originCity = selectedCities.length > 0 ? selectedCities[0] : document.getElementById('originCity').value.trim();
-  const destination = document.getElementById('destination').value.trim();
+  const originCityInput = document.getElementById('originCity');
+  const destinationInput = document.getElementById('destination');
+  const originCity = selectedCities.length > 0 ? selectedCities[0] : (originCityInput ? originCityInput.value.trim() : '');
+  const destination = destinationInput ? destinationInput.value.trim() : '';
 
   if (!originCity) {
     showToast('请输入出发城市', 'error');
@@ -1977,6 +2126,11 @@ async function loadCalendar() {
   const grid = document.getElementById('calendarGrid');
   const title = document.getElementById('calendarTitle');
   const summary = document.getElementById('calendarSummary');
+
+  if (!panel || !grid || !title || !summary) {
+    console.error('Calendar elements not found');
+    return;
+  }
 
   title.textContent = `${currentCalendarYear}年${currentCalendarMonth}月 价格日历`;
   grid.innerHTML = '<div class="loading">加载中...</div>';
@@ -2050,8 +2204,10 @@ async function loadCalendar() {
 
 function selectCalendarDate(date, hasFlight) {
   if (!hasFlight) return;
-  document.getElementById('departDate').value = date;
-  document.getElementById('calendarPanel').style.display = 'none';
+  const departDateInput = document.getElementById('departDate');
+  const calendarPanel = document.getElementById('calendarPanel');
+  if (departDateInput) departDateInput.value = date;
+  if (calendarPanel) calendarPanel.style.display = 'none';
   handleSearch();
 }
 
@@ -2073,6 +2229,10 @@ let currentAirportsData = [];
 
 function toggleMap() {
   const mapPanel = document.getElementById('mapPanel');
+  if (!mapPanel) {
+    console.error('Map panel not found');
+    return;
+  }
   if (mapPanel.style.display === 'none') {
     showMap();
   } else {
@@ -2082,12 +2242,19 @@ function toggleMap() {
 
 function closeMap() {
   const mapPanel = document.getElementById('mapPanel');
-  mapPanel.style.display = 'none';
+  if (mapPanel) {
+    mapPanel.style.display = 'none';
+  }
 }
 
 function showMap() {
   const mapPanel = document.getElementById('mapPanel');
   const mapContainer = document.getElementById('mapContainer');
+  
+  if (!mapPanel || !mapContainer) {
+    console.error('Map elements not found');
+    return;
+  }
   
   mapPanel.style.display = 'block';
   mapPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2699,4 +2866,15 @@ function loadFloatingBtnPosition() {
     btn.removeEventListener('click', handleSearch);
     btn.addEventListener('click', handleFloatingBtnClick);
   }
+}
+
+function closeInterlinePanel() {
+  const panel = document.getElementById('interlinePanel');
+  if (panel) {
+    panel.style.display = 'none';
+  }
+}
+
+function handleInterline() {
+  showToast('联程查询功能开发中', 'default');
 }
